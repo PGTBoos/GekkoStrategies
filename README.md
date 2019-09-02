@@ -1,4 +1,4 @@
-# GekkoStrategues
+# GekkoStrategies
 Custom strategies for the trading application Gekko
 
 Hi and welcome on my Github
