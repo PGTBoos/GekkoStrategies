@@ -10,7 +10,17 @@
 	UPDATE:
 	3. Add pingPong for sideways market
 	
-	Rafael Martín.
+    Rafael Martín.
+
+
+
+    UPDATE:
+    4. Added trendfollowing stoploss 
+
+    Peter Boos.
+    
+
+
 */
 
 // req's
@@ -23,6 +33,7 @@ var strat = {
 	/* INIT */
 	init: function()
 	{
+        console.log(this.settings)
 		// core
 		this.name = 'RSI Bull and Bear + ADX + PingPong';
 		this.requiredHistory = config.tradingAdvisor.historySize;
@@ -145,7 +156,7 @@ var strat = {
            this.MaxPeekClose=( this.settings.closeRatio * candle.close + this.settings.highRatio*candle.high)/(this.settings.closeRatio+this.settings.highRatio)
             }
 
-            if(candle.close< this.MaxPeekClose*this.settings.peekPercentage + this.peekShift)    
+            if(candle.close< this.MaxPeekClose * this.settings.peekPercentage + this.settings.peekShift)    
 		//	if(candle.close < this.MaxPeekClose*0.92+50)   
 			{
 				console.log('Bought around ', this.BoughtAt.close.toFixed(2)  ,'\n escaped falling trend since', this.MaxPeekClose.toFixed(2), candle)
@@ -153,8 +164,7 @@ var strat = {
 			}
 		}
 	else
-{
-
+    {
 
 		// get all indicators
 		let ind = this.tulipIndicators,
@@ -216,7 +226,7 @@ var strat = {
 			this.trend.longPos = this.candle.close;
 			this.advice('long');
 
-			this.Gotcoins=true;
+			this.Gotcoins=true; //added 4 lines for trend stoploss
 			this.MaxPeekClose=0;
 			this.Tick=0;
 			this.BoughtAt=this.CurrentCandle;
@@ -238,9 +248,11 @@ var strat = {
 		if( this.trend.direction !== 'down' && this.Gotcoins)
 		{
 			this.resetTrend();
-			this.trend.direction = 'down';
-			this.trend.longPos = false;
-			this.Gotcoins=false;
+            this.trend.direction = 'down';
+            
+			this.trend.longPos = false; //2 lines required for trend stoploss
+            this.Gotcoins=false;
+            
 			this.advice('short');
 			if( this.debug ) log.info('Going short');
 		}
