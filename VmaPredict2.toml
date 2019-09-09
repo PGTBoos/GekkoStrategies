@@ -1,0 +1,20 @@
+[Swings]
+Magica = 250
+MediumOut = 250
+ShortSight = 350
+MaxPeekPred = 550
+
+[ForcastTrend]
+Short =  6 
+Medium = 17
+Long = 100   #nan
+
+[PeriodAverage]
+Short = 6 
+Medium = 25   
+Long = 100    #nan
+
+[VolumePeriodAverage]   
+Short  = 6    #nan
+Medium = 30  
+Long   = 100  #nan
