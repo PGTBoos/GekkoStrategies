@@ -11,6 +11,7 @@ var strat = {
     CurrentCandle: '',
     CandleDelay: 20,
     Beartrend: false,
+    LongBearTrend:false,
     BearProffit: 0,
     BullProffit: 0,
 
@@ -18,7 +19,8 @@ var strat = {
     SwingMediumOut:0,
     SwingShortSight:0,
     SwingMaxPeekPred:0,
-  
+    SwingBullsEye:0,
+
     //https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
     color: {
         Reset: '\x1b[0m',
@@ -26,6 +28,7 @@ var strat = {
         Default: '\x1b[2m',
         Underscore: '\x1b[4m',
         Reverse: '\x1b[7m',
+        Black: '\x1b[30m',
         Red: '\x1b[31m',
         Green: '\x1b[32m',
         Yellow: '\x1b[33m',
@@ -33,7 +36,16 @@ var strat = {
         Magenta: '\x1b[35m',
         Cyan: '\x1b[36m',
         White: '\x1b[37m',
-        //  Orange : '\x1b[214m' //  https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+
+        BgBlack : "\x1b[40m",
+        BgRed : "\x1b[41m",
+        BgGreen : "\x1b[42m",
+        BgYellow : "\x1b[43m",
+        BgBlue : "\x1b[44m",
+        BgMagenta : "\x1b[45m",
+        BgCyan : "\x1b[46m",
+        BgWhite : "\x1b[47m",
+        
     },
 
 
@@ -42,7 +54,9 @@ var strat = {
         this.SwingMediumOut   =  this.settings.Swings.MediumOut;
         this.SwingShortSight  =  this.settings.Swings.ShortSight;
         this.SwingMaxPeekPred =  this.settings.Swings.MaxPeekPred;
+        this.SwingBullsEye    =  this.settings.Swings.SwingBullsEye;
         // getting the toml variables in
+
       console.log(this.settings);
      
         this.addTulipIndicator('timeseriesforcastLong', 'tsf',  { optInTimePeriod: this.settings.ForcastTrend.Long }); // statiscal forcasting });
@@ -63,7 +77,7 @@ var strat = {
         if (candle.close > this.MaxPeekClose){this.MaxPeekClose=candle.close};
         if (candle.close < this.MinPeekClose){this.MinPeekClose=candle.close};
         if (this.tulipIndicators.maShort.result.result < this.tulipIndicators.maMedium.result.result) this.Beartrend = true; else this.Beartrend = false;
-
+        if (this.tulipIndicators.maMedium.result.result < this.tulipIndicators.maLong.result.result) this.LongBeartrend = true; else this.LongBeartrend = false;
     },
 
     check: function (candle) {
@@ -78,19 +92,26 @@ var strat = {
             vmaMedium = ind.vmaMedium.result.result,
             vmaLong = ind.vmaLong.result.result;
 
+            
+
+
 
         if (!this.Gotcoins) {
-            if (vmaMedium > maMedium && maShort < maMedium) {                   this.long('Uptopica     ', this.color.Green) }
-            else if(candle.close+this.SwingMagica <predictMedium){              this.long('Magica       ', this.color.White)}
+            if (vmaMedium > maMedium && maShort < maMedium && maLong<predictMedium) {                   this.long('Uptopica     ', this.color.Green); }
+            else if(candle.close+this.SwingMagica <predictMedium &&maMedium<maLong){              this.long('Magica       ', this.color.White);}
            // else if(mashort >predictShort+){}
         }
         else {                               // > predicmedium
-            if (vmaMedium < maMedium && maShort > maMedium+this.SwingMediumOut) { this.short('MediumOut    ', this.color.Magenta) }
-            else if(maShort +this.SwingShortSight <predictShort ) {               this.short('ShortSight   ', this.color.Cyan)}
+            if (vmaMedium < maMedium && maShort > maMedium+this.SwingMediumOut) { this.short('MediumOut    ', this.color.Magenta); }
+            else if(maShort +this.SwingShortSight <predictShort ) {               this.short('ShortSight   ', this.color.Yellow);}
         //    else if(this.BoughtAt >candle.close+250) {this.short('peekout     ',this.color.Yellow)}
-           else if(this.MaxPeekClose >predictMedium+this.SwingMaxPeekPred) {      this.short('MaxpeekPred  ',this.color.Yellow)};
+           else if (this.BoughtAt+this.SwingBullsEye <candle.close)                             this.short('BullsEye     ',this.color.Blue);
+          // else if (this.LongBeartrend && candle.close >this.BoughtAt*0.1)          this.short('BearsEye     ',this.color.White);
+           else if(this.MaxPeekClose >predictMedium+this.SwingMaxPeekPred) {      this.short('MaxpeekPred  ',this.color.Cyan);};
         };
         //console.log(candle.close,predictLong, predictMedium, predictShort);
+  
+ 
     },
 
 
@@ -106,11 +127,11 @@ short: function (msg, kleur = this.color.Default) {
         var trend = '';
         if (this.Beartrend) {
             this.BearProffit = this.BearProffit + profit;
-            trend = this.color.Yellow + 'Bear ';
+            trend = this.color.Green + 'Bear ';
         }
         else {
             this.BullProffit = this.BullProffit + profit;
-            trend = this.color.Cyan + 'Bull ';
+            trend = this.color.Red + 'Bull ';
         }
         console.log(trend + kleur + msg + prof);
 
@@ -125,8 +146,9 @@ long: function (msg, kleur = this.color.Default) {
     if (!this.Gotcoins) {
 
         this.Gotcoins = true;
-        var trend = ''; if (this.Beartrend) trend = this.color.Yellow + 'Bear '; else trend = this.color.Cyan + 'Bull ';
-        console.log(trend + kleur + msg);
+        var trend = ''; if (this.Beartrend) trend = this.color.BgGreen+ this.color.Black + 'Bear '; else trend =  this.color.BgRed+ this.color.Black + 'Bull ';
+        
+        console.log(trend + this.color.BgBlack+kleur + msg);
 
         this.BoughtAt = this.CurrentCandle.close;
         this.MaxPeekClose = this.CurrentCandle.close;

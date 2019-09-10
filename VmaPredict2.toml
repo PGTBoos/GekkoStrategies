@@ -1,20 +1,22 @@
 [Swings]
-Magica = 250
-MediumOut = 250
-ShortSight = 350
-MaxPeekPred = 550
+Magica = 250      # used in buy price dips
+MediumOut = 250   # 
+ShortSight = 350  # 
+MaxPeekPred = 550 # short to go out of deep falls based on last peek difference prediction
+BullsEye = 1000   # short when price increased this much since last buy
 
-[ForcastTrend]
+
+[ForcastTrend] #forcast trend tulip indicator
 Short =  6 
 Medium = 17
 Long = 100   #nan
 
-[PeriodAverage]
+[PeriodAverage] #moving averages
 Short = 6 
-Medium = 25   
-Long = 100    #nan
+Medium = 25
+Long = 51
 
-[VolumePeriodAverage]   
+[VolumePeriodAverage] #volume moving averages  
 Short  = 6    #nan
 Medium = 30  
 Long   = 100  #nan
