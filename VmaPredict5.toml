@@ -1,0 +1,41 @@
+[Swings]
+#Swings is used for constants in formula triggers
+
+Magica = 280          # used in long buy price dips
+MediumOut = 280   # used in short sell
+ShortSight = 380    # used in short sell
+
+MaxPeekPred = 580    
+# MaxPeekPred go short to go out of deep falls
+# based on last peek difference prediction
+
+BullsEye = 5000 
+# When taking very long positions and 
+# BTC tends to have huge variation set BullsEye 
+# to extreme high values so it doesn't trigger 
+# Setting BullsEye lower like 1000 will 
+# take a short profit after market has went so 
+# much up since last buy
+# that fixes a certain gain when it happens. 
+
+
+[ForcastTrend] 
+#forcast trend tulip indicator
+
+Short =  6 
+Medium = 17
+Long = 100   #nan
+
+
+[PeriodAverage] 
+#moving averages
+Short = 6 
+Medium = 25
+Long = 100
+
+[VolumePeriodAverage]
+ #volume moving averages  
+
+Short  = 6    #not used
+Medium = 30  
+Long   = 100  #not used
