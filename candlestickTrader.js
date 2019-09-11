@@ -1,3 +1,5 @@
+// source https://github.com/PGTBoos/GekkoStrategies
+//
 // Candlesticks as seen on  ==>  https://www.youtube.com/watch?v=9NkvdaTIUe4
 // Peter Boos I fixed original code and also made it trade  11-0-2019 
 // Share alike free provide some credit if used, and share if improved.
