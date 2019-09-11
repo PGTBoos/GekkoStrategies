@@ -1,4 +1,4 @@
-// VmaPredict2.js By Peter Boos  CC BY    2019
+// VmaPredict5.js By Peter Boos  CC BY    2019
 // source of this (and maybe updated) code : https://github.com/PGTBoos/GekkoStrategies
 //
 // This code is easy to adapt and alter please play with it,
@@ -22,7 +22,7 @@ var strat = {
     PreviousStrategy: '',
     PreviousCandle: '',
     CurrentCandle: '',
-    CandleHistory: '',
+
     CandleDelay: 20,
     ThreeCandleTrend: '',
     Beartrend: false,
@@ -34,6 +34,10 @@ var strat = {
     SwingShortSight: 0,
     SwingMaxPeekPred: 0,
     SwingBullsEye: 0,
+
+    CandleHistory: [],
+
+
 
     //https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
     color: {
@@ -119,10 +123,17 @@ var strat = {
         if (this.tulipIndicators.maShort.result.result < this.tulipIndicators.maMedium.result.result) this.Beartrend = true; else this.Beartrend = false;
 
         // store the last 10 candles in CandleHistory for future development.
+
         this.CandleHistory.push(candle);
         if (this.CandleHistory.length > 10) {
             this.CandleHistory.shift();
         }
+        else { // i dont like it but it needs initialization outside of the init: function
+            this.CandleHistory.push(candle);
+            this.CandleHistory.push(candle);
+            this.CandleHistory.push(candle);
+        }
+
 
         //logic gtom my candlestickTrader
         this.ThreeCandleTrend = '';
@@ -146,7 +157,7 @@ var strat = {
             vhf = ind.verticalhorizontalfilter.result.result;
 
 
-        
+
         // idea from anon.e.mous, nocrash waits after stoploss till market is moving upwards
         // this should stop repeating of MaxpeekPred stoploss falls (i hope)
         // Original plan was based on 2 candles i use 3 however.
@@ -154,6 +165,7 @@ var strat = {
         var nocrash = true;
         if (this.PreviousStrategy === 'MaxpeekPred') {
             nocrash = false;
+            console.log('Wait trading prices dropped after last stoploss. ');
             if (this.ThreeCandleTrend === 'Up') nocrash = true;
         }
 
