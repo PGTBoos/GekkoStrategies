@@ -1,0 +1,41 @@
+[Swings]  # where is store my own constants
+
+# magica       = used in long buy price dips
+# mediumout = used in short sell
+# shortsight   = used in short sell
+
+Magica = 380      
+MediumOut = 300   
+ShortSight =180   
+
+# downhill = short after price drop since highest
+# highshot = short after price jump 2 new candles
+# bullseye = secure profit since bought
+# daystop = max los stops trade till next day
+
+DownHill = 280 
+HighShot =50  
+BullsEye = 500    
+DayStop = 600     
+
+
+[ForcastTrend] 
+#forcast trend tulip indicator
+
+Short =  6 
+Medium = 17
+Long = 100   #nan
+
+
+[PeriodAverage] 
+#moving averages
+Short = 6 
+Medium = 25
+Long = 100
+
+[VolumePeriodAverage]
+ #volume moving averages  
+
+Short  = 6    #not used
+Medium = 30  
+Long   = 100  #not used
