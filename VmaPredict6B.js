@@ -274,7 +274,7 @@ strat = {
             this.Toml.Magica = this.settings.Swings.Magica * maLong;
             this.Toml.MediumOut = this.settings.Swings.MediumOut * maLong;
             this.Toml.ShortSight = this.settings.Swings.ShortSight * maLong;
-            this.Toml.HighShot = this.settings.Swings.HighShot * malong;
+            this.Toml.HighShot = this.settings.Swings.HighShot * maLong;
         } else {
             this.Toml.Magica = this.settings.Swings.Magica
             this.Toml.MediumOut = this.settings.Swings.MediumOut
