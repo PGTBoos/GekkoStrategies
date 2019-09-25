@@ -1,13 +1,13 @@
 // VmaPredict6, feel free to share alter, but post your findings at:
 //       https://forum.gekko.wizb.it/thread-58001.html
-// On that threat you find how this works its explained There
+// On that thread you can find how this works - its explained there
 // I heavily depend on others testing this code to improve it, and tell about it in the forum.
-// There are so many options that i cannot test all combinations.
+// There are so many options that i cannot test all the combinations.
 // this file came from : 
 
 
 //vma Predict 6B   (not yet 7),  values on percentages
-//i only included to set based upon malong (shich now used as wll) (makes more sense to me then on ma medium or mashort)
+//I only included to set based upon malong (which is now used as well) (makes more sense to me then on MA medium or MA short)
 //this.Toml.Magica  
 //this.Toml.MediumOut  
 //this.Toml.ShortSight  
@@ -364,7 +364,7 @@ strat = {
 
     },
     end: function () {
-        console.log('Bear profit', this.Profit.Bear, 'Bull proffit', this.Profit.Bull);
+        console.log('Bear profit', this.Profit.Bear, 'Bull profit', this.Profit.Bull);
     }
 
 };
