@@ -374,7 +374,7 @@ console.log(rsiSafety);
 
     },
     end: function () {
-        console.log('Bear profit', this.Profit.Bear, 'Bull proffit', this.Profit.Bull);
+        console.log('Bear profit', this.Profit.Bear, 'Bull profit', this.Profit.Bull);
     }
 
 };
