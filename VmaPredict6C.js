@@ -287,7 +287,7 @@ strat = {
             this.Toml.HighShot = this.settings.Swings.HighShot
         }
         var rsiWAit ;
-        if (rsiSafety>this.Toml.RSIWait)rsiWait=true; else rsiWait=false; 
+        if (rsiSafety>this.Toml.RSIWait*100)rsiWait=true; else rsiWait=false; 
 
         //Mainly Utopica is sensitive to RSI misstakes
 
