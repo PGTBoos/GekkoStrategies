@@ -306,7 +306,7 @@ console.log(rsiSafety);
             else if (this.MaxPeekClose > predictMedium + this.Toml.DownHill && this.CurrentCandle.close < this.PreviousCandle.close) { this.short('DownHill     sell ', this.color.Yellow) }
             else if (this.BoughtAt + this.Toml.BullsEye < candle.close) this.short('BullsEye     sell ', this.color.Blue);
             else if ((this.CandleHistory[0].close + this.CandleHistory[1].close) - ((this.CandleHistory[2].close + this.CandleHistory[3].close + this.CandleHistory[4].close) * 2 / 3) > this.Toml.HighShot && this.BoughtAt < this.CurrentCandle.close && this.CandleCounter > 5) { this.short('HighShot     sell ', this.color.White) }
-            else if ((rsiSafety>this.Toml.RSIShort )) { this.short('RSI exit     sell ', this.color.Cyan) }
+            else if ((rsiSafety>this.Toml.RSIShort*100)) { this.short('RSI exit     sell ', this.color.Cyan) }
             
             //  else if (candle.trades>7000 && this.CurrentCandle.close>this.BoughtAt )this.short('Follow     sell ', this.color.White)    ;
         };
