@@ -33,7 +33,7 @@ BullsEye = 800
 DayStop  = 1000   
 
 #Daystop after each downhill 
-DownHillStop =true
+DownHillStop = true
 
 [ForcastTrend] 
 # forcast trend tulip indicator
