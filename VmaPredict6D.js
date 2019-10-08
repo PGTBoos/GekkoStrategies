@@ -111,7 +111,7 @@ strat = {
         this.Toml = initthistoml; console.log(this.Toml);
 
 
-        console.log('Sarting VmaPredict math..');
+        
         
 
         this.Toml.Magica = this.settings.Swings.Magica;
@@ -124,10 +124,11 @@ strat = {
         this.Toml.HighShot = this.settings.HighShot;
         this.Toml.RSIShort = this.settings.RSISafety.RSIShort;
         this.Toml.RSIWait  = this.settings.RSISafety.RSIWait; 
+        this.Toml.DownHillStop = this.settings.DownHillStop;
 
         // getting the toml variables in
         //  console.clear();
-       
+        console.log('Sarting VmaPredict math..');
 
         // timeseriesforcasting uses advanced statistics to estimate a likly next candle in current trend
         // by itself its not enough though, has some of the same problems as moving averages, but it works differently
@@ -149,7 +150,7 @@ strat = {
 
         this.addTulipIndicator('verticalhorizontalfilter', 'vhf', { optInTimePeriod: 31 });
 
-        console.log(this.settings);
+        console.log(this.Toml);
 
     },
 
@@ -306,7 +307,7 @@ strat = {
 
             //  trying to get out of weak markets, but wasnt working that well either.
             //  else if ( this.CandleCounter>12 && vhf<0.64 && this.BoughtAt+300 <this.CurrentCandle.close && vmaShort<maShort&&predictShort>maMedium)     { this.short('Bored       sell ',this.color.Blue)}
-            else if (this.MaxPeekClose > predictMedium + this.Toml.DownHill && this.CurrentCandle.close < this.PreviousCandle.close) {this.short('DownHill     sell ', this.color.Yellow); if(this.Toml.Swings.DownHillStop)this.DayStop=true;}
+            else if (this.MaxPeekClose > predictMedium + this.Toml.DownHill && this.CurrentCandle.close < this.PreviousCandle.close) {this.short('DownHill     sell ', this.color.Yellow); if(this.Toml.DownHillStop)this.DayStop=true;}
             else if (this.BoughtAt + this.Toml.BullsEye < candle.close) this.short('BullsEye     sell ', this.color.Blue);
             else if ((this.CandleHistory[0].close + this.CandleHistory[1].close) - ((this.CandleHistory[2].close + this.CandleHistory[3].close + this.CandleHistory[4].close) * 2 / 3) > this.Toml.HighShot && this.BoughtAt < this.CurrentCandle.close && this.CandleCounter > 5) { this.short('HighShot     sell ', this.color.White) }
            
