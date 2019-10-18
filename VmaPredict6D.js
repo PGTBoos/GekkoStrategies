@@ -106,29 +106,24 @@ strat = {
 
         var initthisafter = { strategie: '?', lasttreeup: false, seenhammer: false, proceed: true, ConsoleWarning: true };
         this.After = initthisafter;
-
-        var initthistoml = { Magic: 0, MedmiumOut: 0, ShortSight: 0, DownHill: 0, BullsEye: 0, DayStop: 0, HighShot: 0 ,RSIShort:0,RSIWait:0};
-        this.Toml = initthistoml; console.log(this.Toml);
-
-
         
-        
-
-        this.Toml.Magica = this.settings.Swings.Magica;
-        this.Toml.MediumOut = this.settings.Swings.MediumOut;
-        this.Toml.ShortSight = this.settings.Swings.ShortSight;
-        this.Toml.DownHill = this.settings.Swings.DownHill;
-        this.Toml.DownHillStop = this.settings.Swings.DownHillStop;
-        this.Toml.BullsEye = this.settings.Swings.SwingBullsEye;
-        this.Toml.DayStop  = this.settings.Swings.DayStop * -1;
-        this.Toml.HighShot = this.settings.HighShot;
-        this.Toml.RSIShort = this.settings.RSISafety.RSIShort;
-        this.Toml.RSIWait  = this.settings.RSISafety.RSIWait; 
-        this.Toml.DownHillStop = this.settings.DownHillStop;
+        var initthistoml = {
+                            Magica: this.settings.Swings.Magica,
+                            MediumOut: this.settings.Swings.MediumOut,
+                            ShortSight: this.settings.Swings.ShortSight,
+                            DownHill: this.settings.Swings.DownHill,
+                            DownHillStop: this.settings.Swings.DownHillStop,
+                            BullsEye: this.settings.Swings.BullsEye,
+                            DayStop: this.settings.Swings.DayStop * -1,
+                            HighShot: this.settings.Swings.HighShot,
+                            RSIShort: this.settings.RSISafety.RSIShort,
+                            RSIWait: this.settings.RSISafety.RSIWait
+                            };
+        this.Toml = initthistoml;
 
         // getting the toml variables in
         //  console.clear();
-        console.log('Sarting VmaPredict math..');
+        console.log('Starting VmaPredict math..');
 
         // timeseriesforcasting uses advanced statistics to estimate a likly next candle in current trend
         // by itself its not enough though, has some of the same problems as moving averages, but it works differently
