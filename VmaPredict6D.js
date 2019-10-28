@@ -1,16 +1,16 @@
 // VmaPredict6, feel free to share alter, but post your findings at:
 //       https://forum.gekko.wizb.it/thread-58001.html
-// On that thread you can find how this works - its explained there
+// On that threat you find how this works its explained There
 // I heavily depend on others testing this code to improve it, and tell about it in the forum.
-// There are so many options that i cannot test all the combinations.
+// There are so many options that i cannot test all combinations.
 // this file came from : 
 
 
-//vma Predict 6C   (not yet 7),  values on percentages
-//I only included to set based upon malong (which is now used as well) (makes more sense to me then on MA medium or MA short)
+//vma Predict 6B   (not yet 7),  values on percentages
+//i only included to set based upon malong (shich now used as wll) (makes more sense to me then on ma medium or mashort)
 //this.Toml.Magica  
 //this.Toml.MediumOut  
-//this.Toml.ShortSight 
+//this.Toml.ShortSight  
 
 var strat;
 var config = require('../core/util.js').getConfig();
@@ -111,22 +111,24 @@ strat = {
         this.Toml = initthistoml; console.log(this.Toml);
 
 
-        console.log('Sarting VmaPredict math..');
-        console.log(this.settings);
+        
+        
 
         this.Toml.Magica = this.settings.Swings.Magica;
         this.Toml.MediumOut = this.settings.Swings.MediumOut;
         this.Toml.ShortSight = this.settings.Swings.ShortSight;
         this.Toml.DownHill = this.settings.Swings.DownHill;
+        this.Toml.DownHillStop = this.settings.Swings.DownHillStop;
         this.Toml.BullsEye = this.settings.Swings.SwingBullsEye;
         this.Toml.DayStop  = this.settings.Swings.DayStop * -1;
         this.Toml.HighShot = this.settings.HighShot;
         this.Toml.RSIShort = this.settings.RSISafety.RSIShort;
         this.Toml.RSIWait  = this.settings.RSISafety.RSIWait; 
+        this.Toml.DownHillStop = this.settings.DownHillStop;
 
         // getting the toml variables in
-        console.clear();
-       
+        //  console.clear();
+        console.log('Sarting VmaPredict math..');
 
         // timeseriesforcasting uses advanced statistics to estimate a likly next candle in current trend
         // by itself its not enough though, has some of the same problems as moving averages, but it works differently
@@ -147,6 +149,8 @@ strat = {
 
 
         this.addTulipIndicator('verticalhorizontalfilter', 'vhf', { optInTimePeriod: 31 });
+
+        console.log(this.Toml);
 
     },
 
@@ -275,7 +279,7 @@ strat = {
             rsiSafety = ind.RSIsafety.result.result,
             vhf = ind.verticalhorizontalfilter.result.result;
 
-        if (this.settings.Swings.UsePercentage) {
+        if (this.settings.Swings.UseFractions) {
             this.Toml.Magica = this.settings.Swings.Magica * maLong;
             this.Toml.MediumOut = this.settings.Swings.MediumOut * maLong;
             this.Toml.ShortSight = this.settings.Swings.ShortSight * maLong;
@@ -291,10 +295,10 @@ strat = {
 
         //Mainly Utopica is sensitive to RSI misstakes
 
-console.log(rsiSafety);
+
         if (!this.Gotcoins) {
             if (!rsiWait && !this.DayStop && this.After.proceed && vmaMedium > maMedium && maShort < maMedium && predictShort > maShort) { this.long('Uptopica buy      ', this.color.White) }
-            else if (!this.DayStop && candle.close + this.Toml.Magica < predictMedium) { this.long('Magica   buy      ', this.color.White) }
+            else if (!rsiWait &&!this.DayStop && candle.close + this.Toml.Magica < predictMedium) { this.long('Magica   buy      ', this.color.White) }
             // else if(mashort >predictShort+){}
         }
         else {                               // > predicmedium
@@ -303,11 +307,14 @@ console.log(rsiSafety);
 
             //  trying to get out of weak markets, but wasnt working that well either.
             //  else if ( this.CandleCounter>12 && vhf<0.64 && this.BoughtAt+300 <this.CurrentCandle.close && vmaShort<maShort&&predictShort>maMedium)     { this.short('Bored       sell ',this.color.Blue)}
-            else if (this.MaxPeekClose > predictMedium + this.Toml.DownHill && this.CurrentCandle.close < this.PreviousCandle.close) { this.short('DownHill     sell ', this.color.Yellow) }
+            else if (this.MaxPeekClose > predictMedium + this.Toml.DownHill && this.CurrentCandle.close < this.PreviousCandle.close) {this.short('DownHill     sell ', this.color.Yellow); if(this.Toml.DownHillStop)this.DayStop=true;}
             else if (this.BoughtAt + this.Toml.BullsEye < candle.close) this.short('BullsEye     sell ', this.color.Blue);
             else if ((this.CandleHistory[0].close + this.CandleHistory[1].close) - ((this.CandleHistory[2].close + this.CandleHistory[3].close + this.CandleHistory[4].close) * 2 / 3) > this.Toml.HighShot && this.BoughtAt < this.CurrentCandle.close && this.CandleCounter > 5) { this.short('HighShot     sell ', this.color.White) }
-            else if ((rsiSafety>this.Toml.RSIShort*100)) { this.short('RSI exit     sell ', this.color.Cyan) }
+           
+            //have a minimal profit of 2% as well. (cover trading costs)
+            else if ((rsiSafety>this.Toml.RSIShort*100 && this.BoughtAt *1.02< this.CurrentCandle.close )) { this.short('RSI exit     sell ', this.color.Cyan) }
             
+            // Get some more action if there is a long period of no trades. (sideway markets maybe)
             //  else if (candle.trades>7000 && this.CurrentCandle.close>this.BoughtAt )this.short('Follow     sell ', this.color.White)    ;
         };
     },
@@ -374,7 +381,7 @@ console.log(rsiSafety);
 
     },
     end: function () {
-        console.log('Bear profit', this.Profit.Bear, 'Bull profit', this.Profit.Bull);
+        console.log('Bear profit', this.Profit.Bear, 'Bull proffit', this.Profit.Bull);
     }
 
 };

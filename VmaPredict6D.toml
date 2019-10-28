@@ -1,0 +1,62 @@
+#6D optional Daystop after downhill 
+#Market 158.89380% BTC my 8 month test period 1H candle
+#DayStop after downhill		: 189.12504%
+#Without 					: 185.02755%
+
+[Swings]  # where is store my own constants
+
+# magica    = used in long buy price dips
+# mediumout = used in short sell
+# shortsight= used in short sell
+
+#these 4 can now be in a fractions!
+# ea 0.01 = 1%
+# based upon long moving average
+
+Magica     = 0.0325
+MediumOut  = 0.028  
+ShortSight = 0.49
+HighShot   = 0.088
+
+# if you dont want fractions set below to false!
+UseFractions = true  
+
+
+# downhill = short after price drop since highest
+# highshot = short after price jump 2 new candles
+# bullseye = secure profit since bought
+# daystop = max los stops trade till next day
+
+# those are still fixed numbers
+DownHill = 700
+BullsEye = 800    
+DayStop  = 1000   
+
+#Daystop after each downhill 
+DownHillStop = true
+
+[ForcastTrend] 
+# forcast trend tulip indicator
+Short  =  6 
+Medium = 17
+Long   = 50
+
+[PeriodAverage] 
+# moving averages
+Short  = 5 
+Medium = 25
+Long   = 50
+
+[VolumePeriodAverage]
+# volume moving averages  
+Short  = 7    #not used
+Medium = 30  
+Long   = 50
+
+[RSISafety] 
+# go short when above percentage
+# wait buy  if RSI> rsiWait
+# using x candles
+RSIShort   = 0.96
+RSIWait    = 0.88
+RSIcandles = 6
