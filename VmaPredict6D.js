@@ -21,7 +21,7 @@ strat = {
     BoughtAt: 0,            // candle.close (price of the crypto coin) since last trade
     MaxPeekClose: 0,        // higest value since last buy
     MinPeekClose: 0,        // lowest value since last trade
-    DayStop: false,          // holds trading till the next day.
+    DayStop: false,         // holds trading till the next day.
     CandleCounter: 0,       // counts candles resets on trade buy/sell actions
     PreviousStrategy: '',   // contains last used strategy name
     PreviousCandle: '',     // to store previous candle data between functions (candle history goes has more past candles.)
@@ -106,26 +106,50 @@ strat = {
 
         var initthisafter = { strategie: '?', lasttreeup: false, seenhammer: false, proceed: true, ConsoleWarning: true };
         this.After = initthisafter;
-
-        var initthistoml = { Magic: 0, MedmiumOut: 0, ShortSight: 0, DownHill: 0, BullsEye: 0, DayStop: 0, HighShot: 0 ,RSIShort:0,RSIWait:0};
-        this.Toml = initthistoml; console.log(this.Toml);
+        // { MedmiumOut: 0,
+        //     ShortSight: 0.49,
+        //     DownHill: 700,
+        //     BullsEye: undefined,
+        //     DayStop: -1000,
+        //     HighShot: undefined,
+        //     RSIShort: 0.96,
+        //     RSIWait: 0.88,
+        //     Magica: 0.0325,
+        //     MediumOut: 0.028,
+        //     DownHillStop: undefined }
+      
+        var initthistoml = 
+        {   MedmiumOut: 0,
+            ShortSight: 0,
+            DownHill: 0,
+            BullsEye: 0,
+            DayStop: -1000,
+            HighShot: 0,
+            RSIShort: 0,
+            RSIWait: 0,
+            Magica: 0,
+            MediumOut: 0,
+            DownHillStop: 0
+        };
+        this.Toml = initthistoml; 
 
 
         
         
 
-        this.Toml.Magica = this.settings.Swings.Magica;
-        this.Toml.MediumOut = this.settings.Swings.MediumOut;
-        this.Toml.ShortSight = this.settings.Swings.ShortSight;
-        this.Toml.DownHill = this.settings.Swings.DownHill;
-        this.Toml.DownHillStop = this.settings.Swings.DownHillStop;
-        this.Toml.BullsEye = this.settings.Swings.SwingBullsEye;
-        this.Toml.DayStop  = this.settings.Swings.DayStop * -1;
-        this.Toml.HighShot = this.settings.HighShot;
-        this.Toml.RSIShort = this.settings.RSISafety.RSIShort;
-        this.Toml.RSIWait  = this.settings.RSISafety.RSIWait; 
-        this.Toml.DownHillStop = this.settings.DownHillStop;
+        this.Toml.Magica    = this.settings.Swings.Magica;
+        this.Toml.MediumOut     = this.settings.Swings.MediumOut;
+        this.Toml.ShortSight    = this.settings.Swings.ShortSight;
+        this.Toml.DownHill      = this.settings.Swings.DownHill;
+        this.Toml.DownHillStop  = this.settings.Swings.DownHillStop;
+        this.Toml.BullsEye      = this.settings.Swings.BullsEye;
+        this.Toml.DayStop       = this.settings.Swings.DayStop * -1;
+        this.Toml.HighShot      = this.settings.Swings.HighShot;
+        this.Toml.RSIShort      = this.settings.RSISafety.RSIShort;
+        this.Toml.RSIWait       = this.settings.RSISafety.RSIWait; 
+   
 
+        console.log(this.Toml);
         // getting the toml variables in
         //  console.clear();
         console.log('Sarting VmaPredict math..');
@@ -150,14 +174,13 @@ strat = {
 
         this.addTulipIndicator('verticalhorizontalfilter', 'vhf', { optInTimePeriod: 31 });
 
+        this.addTulipIndicator('longregression','linreg',{optInTimePeriod:72}); //3*24 = 
         console.log(this.Toml);
 
     },
 
     // calculations done before we do the check function (ea setting of extra variables)
     update: function (candle) {
-
-
         var datetimestop = String(candle.start.format('YYYY MMM DD'));
 
         //reset day profit
@@ -279,22 +302,32 @@ strat = {
             rsiSafety = ind.RSIsafety.result.result,
             vhf = ind.verticalhorizontalfilter.result.result;
 
+            lreg = ind.longregression.result.result;
+            adjust =1;
+
+        if( this.CurrentCandle.close <lreg*1.05)adjust=.02;
+            
+
         if (this.settings.Swings.UseFractions) {
             this.Toml.Magica = this.settings.Swings.Magica * maLong;
             this.Toml.MediumOut = this.settings.Swings.MediumOut * maLong;
-            this.Toml.ShortSight = this.settings.Swings.ShortSight * maLong;
+            this.Toml.ShortSight = this.settings.Swings.ShortSight * maLong* adjust;
             this.Toml.HighShot = this.settings.Swings.HighShot * maLong;
         } else {
-            this.Toml.Magica = this.settings.Swings.Magica
-            this.Toml.MediumOut = this.settings.Swings.MediumOut
-            this.Toml.ShortSight = this.settings.Swings.ShortSight
-            this.Toml.HighShot = this.settings.Swings.HighShot
+            this.Toml.Magica = this.settings.Swings.Magica;
+            this.Toml.MediumOut = this.settings.Swings.MediumOut;
+            this.Toml.ShortSight = this.settings.Swings.ShortSight;
+            this.Toml.HighShot = this.settings.Swings.HighShot;
         }
         var rsiWAit ;
         if (rsiSafety>this.Toml.RSIWait*100)rsiWait=true; else rsiWait=false; 
 
         //Mainly Utopica is sensitive to RSI misstakes
 
+     //  if (this.Toml.maLong *0.1 > this.Toml.DownHill )this.Toml.Downhill = this.Toml.maLong*0.1; else this.Toml.DownHill = this.settings.DownHillStop;
+
+
+        
 
         if (!this.Gotcoins) {
             if (!rsiWait && !this.DayStop && this.After.proceed && vmaMedium > maMedium && maShort < maMedium && predictShort > maShort) { this.long('Uptopica buy      ', this.color.White) }
