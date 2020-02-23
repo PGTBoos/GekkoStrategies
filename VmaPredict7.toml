@@ -1,7 +1,9 @@
-#6D optional Daystop after downhill 
-#inside Greengekko Folder
+# VMApredict 7 optimized towards TRON
+# If you still use gekko consider upgrade 
+# to green gekko (gekko has ended).
 
-[Swings]  # where is store my own constants
+[Swings]  
+# Here the main constants
 
 # magica    = used in long buy price dips
 # mediumout = used in short sell
@@ -21,10 +23,10 @@ HighShot       = 0.088
 UseFractions = true  
 
 
-# downhill = short after price drop since highest
+# downhill = sell after price drop since highest
 # highshot = short after price jump 2 new candles
-# bullseye = secure profit since bought
-# daystop = max los stops trade till next day
+# bullseye = sell if raised this much since bought
+# daystop = max los, stops trade till next day
 
 # those are still fixed numbers
 DownHill = 0.002
@@ -48,7 +50,7 @@ Long   = 250
 
 [VolumePeriodAverage]
 # volume moving averages  
-Short  = 7    #not used
+Short  = 7  
 Medium = 30
 Long   = 50
 
