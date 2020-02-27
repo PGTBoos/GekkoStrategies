@@ -56,7 +56,7 @@ strat = {
         Magenta: '\x1b[35m',
         Cyan: '\x1b[36m',
         White: '\x1b[37m',
-
+        //BG for background collor
         BgBlack: "\x1b[40m",
         BgRed: "\x1b[41m",
         BgGreen: "\x1b[42m",
@@ -91,6 +91,9 @@ strat = {
     //helper function for day of date
     DayNRCandle: function (date) { },
 
+    //Helper function days since trade
+    DaysSinceTrade: function(date) { },   //todo
+
 
     //helper function for waiting till buy only if its the lowest of a series
     LowestOfN(){},
@@ -98,37 +101,31 @@ strat = {
 
     // to initialize this strategy
     init: function () {
-console.log(config.VmapPredict6D);
+        console.log(config.VmapPredict7);
         var requiredHistory = config.tradingAdvisor.historySize;
         var setCandleSize = config.tradingAdvisor.candleSize;
         console.log("candleSize: " + setCandleSize + ", history: " + requiredHistory);
 
+        var initthisprofit = 
+        {   Bear: 0, 
+            Bull: 0, 
+            Last: 0, 
+            Day: 0, 
+            Date: '-',
+            DayConsoleWarning: true };
 
-
-
-        var initthisprofit = { Bear: 0, Bull: 0, Last: 0, Day: 0, Date: '-', DayConsoleWarning: true };
         this.Profit = initthisprofit;
 
         var initthisafter = { strategie: '?', lasttreeup: false, seenhammer: false, proceed: true, ConsoleWarning: true };
         this.After = initthisafter;
-        // { MedmiumOut: 0,
-        //     ShortSight: 0.49,
-        //     DownHill: 700,
-        //     BullsEye: undefined,
-        //     DayStop: -1000,
-        //     HighShot: undefined,
-        //     RSIShort: 0.96,
-        //     RSIWait: 0.88,
-        //     Magica: 0.0325,
-        //     MediumOut: 0.028,
-        //     DownHillStop: undefined }
-      
-        var initthistoml = 
+        
+        //define a varile to store y name the toml variables, its nicer to refer to later this way.
+        var initthistoml =          //temp struct as name holder
         {   MedmiumOut: 0,
             ShortSight: 0,
             DownHill: 0,
             BullsEye: 0,
-            DayStop: -1,
+            DayStop: -1000,
             HighShot: 0,
             RSIShort: 0,
             RSIWait: 0,
@@ -137,54 +134,48 @@ console.log(config.VmapPredict6D);
             DownHillStop: 0
         };
         this.Toml = initthistoml; 
-
-
-        
-        
-
-        this.Toml.Magica    = this.settings.Swings.Magica;
+        this.Toml.Magica        = this.settings.Swings.Magica;
         this.Toml.MediumOut     = this.settings.Swings.MediumOut;
         this.Toml.ShortSight    = this.settings.Swings.ShortSight;
         this.Toml.DownHill      = this.settings.Swings.DownHill;
         this.Toml.DownHillStop  = this.settings.Swings.DownHillStop;
         this.Toml.BullsEye      = this.settings.Swings.BullsEye;
-        this.Toml.DayStop       = this.settings.Swings.DayStop ;
+        this.Toml.DayStop       = -Math.abs(this.settings.Swings.DayStop) ; //loss is negative
         this.Toml.HighShot      = this.settings.Swings.HighShot;
         this.Toml.RSIShort      = this.settings.RSISafety.RSIShort;
         this.Toml.RSIWait       = this.settings.RSISafety.RSIWait; 
    
 
-     
-        // getting the toml variables in
-        //  console.clear();
         console.log('Sarting VmaPredict math..');
 
         // timeseriesforcasting uses advanced statistics to estimate a likly next candle in current trend
-        // by itself its not enough though, has some of the same problems as moving averages, but it works differently
+        // by itself its not enough though, it has some of the same problems as moving averages, but it works differently
         this.addTulipIndicator('timeseriesforcastLong', 'tsf', { optInTimePeriod: this.settings.ForcastTrend.Long });
         this.addTulipIndicator('timeseriesforcastMedium', 'tsf', { optInTimePeriod: this.settings.ForcastTrend.Medium });
         this.addTulipIndicator('timeseriesforcastShort', 'tsf', { optInTimePeriod: this.settings.ForcastTrend.Short });
+
         //Simple moving average of a series using different time frames, ea average over a period
         this.addTulipIndicator('maMedium', 'sma', { optInTimePeriod: this.settings.PeriodAverage.Medium });
         this.addTulipIndicator('maShort', 'sma', { optInTimePeriod: this.settings.PeriodAverage.Short });
         this.addTulipIndicator('maLong', 'sma', { optInTimePeriod: this.settings.PeriodAverage.Long });
+
         //a slightly more advanced average that weights by volume of trades
         this.addTulipIndicator('vmaMedium', 'vwma', { optInTimePeriod: this.settings.VolumePeriodAverage.Medium });
         this.addTulipIndicator('vmaShort', 'vwma', { optInTimePeriod: this.settings.VolumePeriodAverage.Short });
         this.addTulipIndicator('vmaLong', 'vwma', { optInTimePeriod: this.settings.VolumePeriodAverage.Long });
+
         //vertical horizontal filter is a line indicator, (sadly) its always possitive though
         //it tells something about rise and fall speed votality of market, race conditions etc. 
         this.addTulipIndicator('RSIsafety','rsi', { optInTimePeriod: this.settings.RSISafety.RSIcandles }); 
 
-
         this.addTulipIndicator('verticalhorizontalfilter', 'vhf', { optInTimePeriod: 31 });
 
         this.addTulipIndicator('longregression','linreg',{optInTimePeriod:72}); //3*24 = 
-       // console.log(this.Toml);
+        
+        
+        
+        // console.log(this.Toml);
         console.log(this.settings);
-
-
-
     },
 
     // calculations done before we do the check function (ea setting of extra variables)
@@ -199,12 +190,16 @@ console.log(config.VmapPredict6D);
             this.Profit.DayConsoleWarning = true
         }
 
-        if (this.Profit.Day < this.Toml.DayStop && this.Profit.DayConsoleWarning == true) {
+        if (this.Profit.Day < this.Toml.DayStop && 
+            this.Profit.DayConsoleWarning == true 
+         //   this.Profit.Day !== 0     //bug this line shouldnt be needed there is abug somewhere ?.
+            ) {
             this.DayStop = true;
             this.Profit.DayConsoleWarning = false;
             this.Profit.Day = 0;
             var daystopmsg = this.color.BgCyan + this.color.Black + this.Profit.Date + '  ***  Enough for Today there is to much negativity here  ***' + this.color.BgBlack + this.color.White;
             console.log(daystopmsg);
+            console.log(this.Profit);
         }
 
 
